@@ -1,0 +1,24 @@
+package com.yahir.ecommerce.product.infrastructure.adapter.in.web.dto;
+
+import com.yahir.ecommerce.product.domain.model.Category;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+
+import java.math.BigDecimal;
+
+public record CreateProductRequest (
+        @NotBlank(message= "Product name is required")
+        String name,
+        String description,
+        @NotBlank(message = "Sku is required")
+        String sku,
+        @Positive(message = "Price must be positive")
+        @NotNull(message= "Price is required")
+        BigDecimal price,
+        @NotNull(message = "Stock is required")
+        @PositiveOrZero(message = "Stock cannot be negative")
+        Integer stock,
+        @NotNull(message= "The id Category is required")
+        Long categoryId){}
