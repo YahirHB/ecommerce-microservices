@@ -1,7 +1,6 @@
 package com.yahir.ecommerce.product.infrastructure.adapter.out.persistence.mapper;
 
 import com.yahir.ecommerce.product.domain.model.Product;
-import com.yahir.ecommerce.product.infrastructure.adapter.out.persistence.entity.CategoryEntity;
 import com.yahir.ecommerce.product.infrastructure.adapter.out.persistence.entity.ProductEntity;
 
 public class ProductMapper {
