@@ -1,4 +1,4 @@
-package com.yahir.ecommerce.product.infrastructure.exception;
+package com.yahir.ecommerce.product.domain.exception;
 
 public class ProductNotDeactivatedException extends RuntimeException{
     public ProductNotDeactivatedException(Long id){

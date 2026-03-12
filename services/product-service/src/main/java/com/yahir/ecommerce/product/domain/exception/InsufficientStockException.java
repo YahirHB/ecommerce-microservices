@@ -1,4 +1,4 @@
-package com.yahir.ecommerce.product.infrastructure.exception;
+package com.yahir.ecommerce.product.domain.exception;
 
 public class InsufficientStockException extends RuntimeException{
     public InsufficientStockException (Long productId,int quantity){

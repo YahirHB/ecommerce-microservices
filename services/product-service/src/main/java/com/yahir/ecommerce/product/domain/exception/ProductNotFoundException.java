@@ -1,4 +1,4 @@
-package com.yahir.ecommerce.product.infrastructure.exception;
+package com.yahir.ecommerce.product.domain.exception;
 
 public class ProductNotFoundException extends RuntimeException{
     public ProductNotFoundException(Long id) {
