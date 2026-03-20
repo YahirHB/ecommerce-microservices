@@ -1,6 +1,5 @@
 package com.yahir.ecommerce.product.infrastructure.adapter.in.web.dto;
 
-import com.yahir.ecommerce.product.domain.model.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

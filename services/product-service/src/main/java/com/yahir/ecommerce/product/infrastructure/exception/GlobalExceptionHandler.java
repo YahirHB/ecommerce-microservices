@@ -1,6 +1,9 @@
 package com.yahir.ecommerce.product.infrastructure.exception;
 
-import com.yahir.ecommerce.product.infrastructure.adapter.in.web.dto.ProductResponse;
+import com.yahir.ecommerce.product.domain.exception.DuplicateSkuException;
+import com.yahir.ecommerce.product.domain.exception.InsufficientStockException;
+import com.yahir.ecommerce.product.domain.exception.ProductNotDeactivatedException;
+import com.yahir.ecommerce.product.domain.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

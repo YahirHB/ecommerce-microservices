@@ -1,10 +1,13 @@
 package com.yahir.ecommerce.product.aplication.service;
 
+import com.yahir.ecommerce.product.domain.exception.DuplicateSkuException;
+import com.yahir.ecommerce.product.domain.exception.InsufficientStockException;
+import com.yahir.ecommerce.product.domain.exception.ProductNotDeactivatedException;
+import com.yahir.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.yahir.ecommerce.product.domain.model.Product;
 import com.yahir.ecommerce.product.domain.model.ProductStatus;
 import com.yahir.ecommerce.product.domain.port.in.ProductUseCase;
 import com.yahir.ecommerce.product.domain.port.out.ProductRepositoryPort;
-import com.yahir.ecommerce.product.infrastructure.exception.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
