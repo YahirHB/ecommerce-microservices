@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @Tag(name = "Products", description = "Gestión de productos del ecommerce")
 public class ProductController {
 
@@ -121,7 +121,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Reducir stock - Order Service")
-    @PatchMapping("/{productId}/reduce-stock")
+    @PostMapping("/{productId}/reduce-stock")
     public ResponseEntity<Void> reduceStock(
             @PathVariable Long productId,
             @RequestParam int quantity) {
