@@ -18,8 +18,4 @@ public interface ProductUseCase {
     Page<Product> findAllPaginated(Pageable pageable);
     Page<Product> findByCategory(Long categoryId, Pageable pageable);
 
-    // ─── STOCK (Consumed by Order Service) ───────────────
-    boolean checkStock(Long productId, int quantity);
-    void reduceStock(Long productId, int quantity);
-
 }

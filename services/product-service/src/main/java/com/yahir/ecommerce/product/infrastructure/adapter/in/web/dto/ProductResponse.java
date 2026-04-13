@@ -9,7 +9,6 @@ public record ProductResponse (Long id,
                                String description,
                                String sku,
                                BigDecimal price,
-                               Integer stock,
                                CategoryResponse category,
                                ProductStatus status,
                                LocalDate createdAt){}

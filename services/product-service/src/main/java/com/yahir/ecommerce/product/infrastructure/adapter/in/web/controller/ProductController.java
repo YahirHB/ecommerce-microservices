@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/products")
 @Tag(name = "Products", description = "Gestión de productos del ecommerce")
 public class ProductController {
 
@@ -108,24 +108,5 @@ public class ProductController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return ResponseEntity.ok(productUseCase.findByCategory(categoryId, pageable)
                 .map(ProductWebMapper::toResponse));
-    }
-
-    // ─── STOCK (Consumed by Order Service) ───────────────
-
-    @Operation(summary = "Verificar stock disponible - Order Service")
-    @GetMapping("/{productId}/check-stock")
-    public ResponseEntity<Boolean> checkStock(
-            @PathVariable Long productId,
-            @RequestParam int quantity) {
-        return ResponseEntity.ok(productUseCase.checkStock(productId, quantity));
-    }
-
-    @Operation(summary = "Reducir stock - Order Service")
-    @PostMapping("/{productId}/reduce-stock")
-    public ResponseEntity<Void> reduceStock(
-            @PathVariable Long productId,
-            @RequestParam int quantity) {
-        productUseCase.reduceStock(productId, quantity);
-        return ResponseEntity.noContent().build();
     }
 }

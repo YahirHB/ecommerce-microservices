@@ -32,8 +32,6 @@ public class ProductEntity {
 
     private BigDecimal price;
 
-    private Integer stock;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="categoryId", nullable = false)
     private CategoryEntity category;
