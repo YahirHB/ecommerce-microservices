@@ -60,7 +60,7 @@ public class PaymentService implements PaymentUseCase {
             // Simula éxito — puedes cambiar esto para probar el flujo de fallo
             // --- SIMULACIÓN DE FALLO ---
             // Si el monto es exactamente 21499.00, lanzamos un error para probar
-            if (payment.getAmount().doubleValue() == 21499.00) {
+            if (payment.getAmount().doubleValue() == 1998.00) {
                 throw new RuntimeException("Simulated Gateway Timeout - Stripe is down");
             }
             // ---------------------------

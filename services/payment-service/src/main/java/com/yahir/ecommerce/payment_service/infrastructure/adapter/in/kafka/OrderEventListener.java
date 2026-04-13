@@ -16,7 +16,7 @@ public class OrderEventListener {
     private final PaymentUseCase paymentUseCase; // Inyección de la lógica de negocio (tu caso de uso)
 
     @KafkaListener(
-            topics = "${kafka.topics.order-created}", // El "canal" que este método se queda escuchando
+            topics = "${kafka.topics.order-pending}", // El "canal" que este método se queda escuchando
             groupId = "${kafka.consumer.group-id}",   // Identifica a este consumidor para repartir mensajes
             properties = {
                     // Ignora el "Type ID" que envía el emisor en el header (evita errores de paquetes distintos)
