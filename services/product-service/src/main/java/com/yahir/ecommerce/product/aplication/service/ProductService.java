@@ -1,7 +1,6 @@
 package com.yahir.ecommerce.product.aplication.service;
 
 import com.yahir.ecommerce.product.domain.exception.DuplicateSkuException;
-import com.yahir.ecommerce.product.domain.exception.InsufficientStockException;
 import com.yahir.ecommerce.product.domain.exception.ProductNotDeactivatedException;
 import com.yahir.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.yahir.ecommerce.product.domain.model.Product;
@@ -101,28 +100,4 @@ public class ProductService implements ProductUseCase {
         return productRepositoryPort.findByCategory(categoryId, pageable);
     }
 
-    // ─── STOCK (Consumed by Order Service) ───────────────
-
-    @Transactional(readOnly = true)
-    @Override
-    public boolean checkStock(Long productId, int quantity) {
-        Product product = productRepositoryPort.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(productId));
-        return product.getStock() >= quantity;
-    }
-
-    @Transactional
-    @Override
-    public void reduceStock(Long productId, int quantity) {
-        Product product = productRepositoryPort.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(productId));
-        if (product.getStock() < quantity) {
-            throw new InsufficientStockException(productId, quantity);
-        }
-        product.setStock(product.getStock() - quantity);
-        if (product.getStock() == 0) {
-            product.setStatus(ProductStatus.OUT_OF_STOCK);
-        }
-        productRepositoryPort.save(product);
-    }
 }

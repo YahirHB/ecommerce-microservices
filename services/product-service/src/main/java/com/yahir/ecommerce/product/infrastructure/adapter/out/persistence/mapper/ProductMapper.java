@@ -11,7 +11,6 @@ public class ProductMapper {
                 product.getDescription(),
                 product.getSku(),
                 product.getPrice(),
-                product.getStock(),
                 CategoryMapper.toEntity(product.getCategory()),
                 product.getStatus(),
                 product.getCreatedAt()
@@ -25,7 +24,6 @@ public class ProductMapper {
                 entity.getDescription(),
                 entity.getSku(),
                 entity.getPrice(),
-                entity.getStock(),
                 CategoryMapper.toDomain(entity.getCategory()),
                 entity.getStatus(),
                 entity.getCreatedAt()

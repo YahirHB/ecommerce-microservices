@@ -1,7 +1,6 @@
 package com.yahir.ecommerce.product.infrastructure.exception;
 
 import com.yahir.ecommerce.product.domain.exception.DuplicateSkuException;
-import com.yahir.ecommerce.product.domain.exception.InsufficientStockException;
 import com.yahir.ecommerce.product.domain.exception.ProductNotDeactivatedException;
 import com.yahir.ecommerce.product.domain.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -34,10 +33,4 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
 
-    @ExceptionHandler(InsufficientStockException.class)
-    public ResponseEntity<String> handleInsufficientStock(InsufficientStockException ex){
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ex.getMessage());
-    }
 }

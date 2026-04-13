@@ -15,7 +15,6 @@ public class Product {
     private String description;
     private String sku;
     private BigDecimal price;
-    private Integer stock;
     private Category category;
     private ProductStatus status;
     private LocalDate createdAt;

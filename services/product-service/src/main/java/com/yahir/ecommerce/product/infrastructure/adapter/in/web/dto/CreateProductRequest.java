@@ -16,8 +16,5 @@ public record CreateProductRequest (
         @Positive(message = "Price must be positive")
         @NotNull(message= "Price is required")
         BigDecimal price,
-        @NotNull(message = "Stock is required")
-        @PositiveOrZero(message = "Stock cannot be negative")
-        Integer stock,
         @NotNull(message= "The id Category is required")
         Long categoryId){}
