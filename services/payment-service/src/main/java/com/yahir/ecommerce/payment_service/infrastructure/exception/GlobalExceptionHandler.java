@@ -5,13 +5,13 @@ import com.yahir.ecommerce.payment_service.domain.exception.PaymentNotFoundExcep
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(PaymentNotFoundException.class)
     public ProblemDetail handlerNotFound (PaymentNotFoundException ex){

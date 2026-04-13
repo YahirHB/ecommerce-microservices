@@ -2,7 +2,6 @@ package com.yahir.ecommerce.payment_service.infrastructure.adapter.out.persisten
 
 import com.yahir.ecommerce.payment_service.domain.model.Payment;
 import com.yahir.ecommerce.payment_service.domain.port.out.PaymentRepositoryPort;
-import com.yahir.ecommerce.payment_service.infrastructure.adapter.out.persistence.entity.PaymentEntity;
 import com.yahir.ecommerce.payment_service.infrastructure.adapter.out.persistence.mapper.PaymentPersistenceMapper;
 import com.yahir.ecommerce.payment_service.infrastructure.adapter.out.persistence.repository.JpaPaymentRepository;
 import lombok.RequiredArgsConstructor;
