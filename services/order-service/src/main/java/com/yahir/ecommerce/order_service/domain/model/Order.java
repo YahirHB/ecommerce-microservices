@@ -43,7 +43,7 @@ public class Order {
     }
     private boolean isValidTransition(OrderStatus current, OrderStatus next) {
         return switch (current) {
-            case CREATED   -> next == OrderStatus.CONFIRMED || next == OrderStatus.CANCELLED;
+            case PENDING   -> next == OrderStatus.CONFIRMED || next == OrderStatus.CANCELLED;
             case CONFIRMED -> next == OrderStatus.PAID      || next == OrderStatus.CANCELLED;
             case PAID      -> next == OrderStatus.SHIPPED   || next == OrderStatus.CANCELLED;
             case SHIPPED   -> next == OrderStatus.DELIVERED;

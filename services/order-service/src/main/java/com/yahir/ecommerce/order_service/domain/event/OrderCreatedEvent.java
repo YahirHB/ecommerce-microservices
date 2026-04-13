@@ -9,5 +9,5 @@ public record OrderCreatedEvent(
 ) implements DomainEvent {
 
     @Override
-    public String eventType() { return "ORDER_CREATED"; }
+    public String eventType() { return "ORDER_PENDING"; }
 }

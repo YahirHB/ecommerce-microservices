@@ -1,7 +1,7 @@
 package com.yahir.ecommerce.order_service.domain.model;
 
 public enum OrderStatus {
-    CREATED,
+    PENDING,
     CONFIRMED,
     PAID,
     SHIPPED,

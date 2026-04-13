@@ -14,10 +14,4 @@ public interface ProductFeignClient {
 
     @GetMapping("/api/v1/products/{id}")
     ProductResponse getProduct(@PathVariable Long id);
-
-    @GetMapping("/api/v1/products/{id}/check-stock")
-    boolean checkStock(@PathVariable Long id, @RequestParam int quantity);
-
-    @PostMapping("/api/v1/products/{id}/reduce-stock")
-    void reduceStock(@PathVariable Long id, @RequestParam int quantity);
 }
