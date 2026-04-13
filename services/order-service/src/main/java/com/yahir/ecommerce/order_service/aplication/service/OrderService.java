@@ -12,8 +12,10 @@ import com.yahir.ecommerce.order_service.domain.model.OrderStatus;
 import com.yahir.ecommerce.order_service.domain.model.ProductInfo;
 import com.yahir.ecommerce.order_service.domain.port.in.OrderUseCase;
 import com.yahir.ecommerce.order_service.domain.port.out.EventPublisherPort;
+import com.yahir.ecommerce.order_service.domain.port.out.InventoryClientPort;
 import com.yahir.ecommerce.order_service.domain.port.out.OrderRepositoryPort;
 import com.yahir.ecommerce.order_service.domain.port.out.ProductClientPort;
+import com.yahir.ecommerce.order_service.infrastructure.adapter.in.web.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,41 +31,55 @@ import java.util.List;
 public class OrderService implements OrderUseCase {
     private final OrderRepositoryPort orderRepository;
     private final ProductClientPort productClient;
+    private final InventoryClientPort inventoryClient;
     private final EventPublisherPort eventPublisher;
 
+    @Transactional
     @Override
     public Order createOrder(CreateOrderCommand command) {
-        // 1. Validar stock de cada producto
-        for (OrderItemCommand i:command.getItems()) {
-            boolean hasStock = productClient.checkoutStock(i.getProductId(), i.getQuantity());
-            if (!hasStock){
-                throw new InsufficientStockException(i.getProductId(), i.getQuantity());
+
+        // 1. Validar stock de todos los items primero — sin reservar aún
+        for (OrderItemCommand item : command.getItems()) {
+            StockSummaryResponse stock = inventoryClient.getStockSummary(item.getProductId());
+            if (stock.availableQuantity() < item.getQuantity()) {
+                throw new InsufficientStockException(
+                        item.getProductId(), item.getQuantity());
             }
         }
 
-        // 2. Reducir stock
-        for (OrderItemCommand i: command.getItems()){
-            productClient.reduceStock(i.getProductId(), i.getQuantity());
-        }
-
-        // 3. Construir los OrderItems del domain
+        // 2. Construir items con snapshot de precio desde Product Service
         List<OrderItem> items = command.getItems().stream()
                 .map(this::toOrderItem)
                 .toList();
 
-        // 4. Construir la Order del domain
+        // 3. Crear y persistir Order en PENDING — sin orderId aún necesitamos persistir primero
         Order order = new Order(
                 null,
                 command.getCustomerId(),
                 items,
-                OrderStatus.CREATED,
+                OrderStatus.PENDING,
                 LocalDateTime.now()
         );
+        Order saved = orderRepository.save(order);  // ya tenemos el orderId real
 
-        // 5. Persistir
-        Order saved = orderRepository.save(order);
+        // 4. UNA SOLA LLAMADA al Inventory Service
+        try {
+            List<ItemReserveRequest> reserveItems = command.getItems().stream()
+                    .map(i -> new ItemReserveRequest(i.getProductId(), i.getQuantity()))
+                    .toList();
 
-        // 6. Publicar evento
+            inventoryClient.reserveAllStock(new ReserveStockBatchRequest(
+                    saved.getId(), saved.getCustomerId(), reserveItems
+            ));
+        } catch (Exception ex) {
+            // Si falla la única llamada, cancelamos orden.
+            // El @Transactional se encarga del rollback local.
+            saved.transitionTo(OrderStatus.CANCELLED);
+            orderRepository.save(saved);
+            throw new RuntimeException("Error al reservar inventario: " + ex.getMessage());
+        }
+
+        // 5. Publicar evento — Payment solo necesita el orderId
         eventPublisher.publish(new OrderCreatedEvent(
                 saved.getId(),
                 saved.getCustomerId(),
@@ -72,6 +88,7 @@ public class OrderService implements OrderUseCase {
         return saved;
     }
 
+    @Transactional
     @Override
     public void updateStatus(Long orderId, OrderStatus newStatus) {
         Order order = getOrderOrThrow(orderId);
