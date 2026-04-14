@@ -1,0 +1,110 @@
+spring:
+  # Identificación de la microservicio en el ecosistema (Eureka, Config Server, etc.)
+  application:
+    name: inventory-service
+  #Quitar estas cuando conectemos con config server
+  cloud:
+    config:
+      enabled: false
+      import-check:
+        enabled: false
+
+  # Configuración para obtener propiedades de forma externa desde un servidor centralizado
+ # config:
+    #import: optional:configserver:http://localhost:8888
+
+  # Configuración de la base de datos relacional (MySQL)
+  datasource:
+    url: jdbc:mysql://localhost:3306/bd_ecommerce
+    username: root
+    password: admin123
+    driver-class-name: com.mysql.cj.jdbc.Driver # Driver específico para MySQL 8+
+
+  # Configuración de JPA / Hibernate (ORM)
+  jpa:
+    hibernate:
+      ddl-auto: update # Actualiza el esquema de la BD automáticamente según tus entidades
+    show-sql: true     # Muestra las sentencias SQL en la consola
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect # Ayuda a Hibernate a generar SQL óptimo para MySQL
+        format_sql: true # Formatea el SQL en consola para que sea legible
+
+  # Configuración de caché o persistencia rápida con Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+
+  # Configuración de mensajería asíncrona con Apache Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false # Evita enviar información de clases Java en los headers (mejor interoperabilidad)
+    consumer:
+      group-id: inventory-service-group
+      auto-offset-reset: earliest # Si no hay offset previo, lee desde el principio del tópico
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*" # Permite deserializar objetos JSON de cualquier paquete
+
+# Puerto donde corre este microservicio
+server:
+  port: 8083
+
+# Registro y descubrimiento de servicios con Netflix Eureka
+#eureka:
+  #client:
+    #service-url:
+     # defaultZone: http://localhost:8761/eureka/ # URL del servidor de descubrimiento
+ # instance:
+    #prefer-ip-address: true # Registra la IP en lugar del nombre del host (útil en Docker/Cloud)
+
+  #Quitar cuando se levante eurekaServer
+eureka:
+  client:
+    enabled: false
+  instance:
+    # Esto también ayuda a evitar que intente buscar nombres de host innecesarios
+    registration-enabled: false
+
+# Tolerancia a fallos con Resilience4j
+resilience4j:
+  circuitbreaker:
+    instances:
+      product-service:
+        sliding-window-size: 10 # Evalúa las últimas 10 llamadas
+        failure-rate-threshold: 50 # Abre el circuito si falla el 50% de las llamadas
+        wait-duration-in-open-state: 10s # Tiempo de espera antes de pasar a "medio abierto"
+        permitted-number-of-calls-in-half-open-state: 3 # Pruebas permitidas para ver si el servicio sanó
+        ignore-exceptions:
+          - com.yahir.ecommerce.inventory_service.exception.ProductNotFoundException
+  retry:
+    instances:
+      product-service:
+        max-attempts: 3 # Reintenta la operación hasta 3 veces
+        wait-duration: 2s # Espera 2 segundos entre reintentos
+
+
+# Propiedad personalizada para definir la URL de otro microservicio
+clients:
+  product-service:
+    base-url: http://localhost:0909
+
+# Configuración de documentación automática con Swagger / OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs # Endpoint para obtener el JSON de la documentación
+  swagger-ui:
+    path: /swagger-ui.html # Interfaz visual para probar los endpoints
+
+# Configuración de niveles de registro (Logs)
+logging:
+  level:
+    com.tuempresa.inventory: DEBUG # Muestra detalles máximos de tu código
+    org.springframework.kafka: INFO  # Muestra solo información relevante de Kafka
